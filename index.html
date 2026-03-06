@@ -674,6 +674,7 @@ let state = {
 const API_BASE = 'https://cxo-api.mohansimham.workers.dev';
 const SIM_ID = 'cdo4';
 const Q = {};
+let authToken = null;
 
 // ─── PHASE SWITCHING ─────────────────────────────────────
 function showPhase(id){
@@ -755,6 +756,12 @@ function verifyOTP(){
   if(entered!==state.otp){alert('Incorrect code. Please try again.');return;}
   clearInterval(state.timerInterval);
   gtag('event','email_verified',{sim:'CDO-SIM-4-JPMorgan'});
+  // Request auth token from API
+  fetch(`${API_BASE}/api/auth`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:state.email,simId:SIM_ID})
+  }).then(r=>r.json()).then(d=>{authToken=d.token;}).catch(()=>{});
   localStorage.setItem(LS.name,state.name);
   localStorage.setItem(LS.email,state.email);
   const attempts=parseInt(localStorage.getItem(LS.attempts)||'0');
@@ -772,7 +779,9 @@ async function startSim(){
   // Fetch questions from API if not already cached
   if(!Q[state.currentAttempt]){
     try{
-      const res=await fetch(`${API_BASE}/api/questions/${SIM_ID}/${state.currentAttempt}`);
+      const res=await fetch(`${API_BASE}/api/questions/${SIM_ID}/${state.currentAttempt}`,{
+        headers:authToken?{'Authorization':`Bearer ${authToken}`}:{}
+      });
       if(!res.ok) throw new Error('API error '+res.status);
       const data=await res.json();
       Q[state.currentAttempt]=data.questions;
