@@ -726,7 +726,7 @@ function sendOTP(){
   state.otpAttempts=0;
 
   emailjs.send(EJS_SERVICE,EJS_TEMPLATE,{
-    to_name:name, to_email:email, otp_code:state.otp, sim_name:'CDO SIM 4 — JPMorgan Chase'
+    to_name:name, to_email:email, otp:state.otp, sim_name:'CDO SIM 4 — JPMorgan Chase'
   }).then(()=>{
     document.getElementById('gate-form').style.display='none';
     document.getElementById('otp-section').style.display='block';
