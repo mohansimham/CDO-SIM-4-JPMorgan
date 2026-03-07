@@ -726,7 +726,8 @@ function sendOTP(){
   state.otpAttempts=0;
 
   emailjs.send(EJS_SERVICE,EJS_TEMPLATE,{
-    to_name:name, to_email:email, otp:state.otp, sim_name:'CDO SIM 4 — JPMorgan Chase'
+    to_name:name, to_email:email, otp:state.otp, sim_name:'CDO SIM 4 — JPMorgan Chase',
+    message:`Hi ${name},\n\nYour CXO Simulabs verification code for CDO SIM 4 (JPMorgan Chase) is:\n\n${state.otp}\n\nThis code expires in 5 minutes. Do not share it with anyone.\n\n— CXO Simulabs Team\ncxosimulabs.com`
   }).then(()=>{
     document.getElementById('gate-form').style.display='none';
     document.getElementById('otp-section').style.display='block';
